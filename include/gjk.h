@@ -1,3 +1,5 @@
+#pragma once
+
 //  Created by Igor Kroitor on 29/12/15.
 
 #include <stdio.h>

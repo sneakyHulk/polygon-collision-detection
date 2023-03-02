@@ -1,3 +1,5 @@
+#pragma once
+
 #include <random>
 #include <vector>
 
@@ -30,38 +32,38 @@ std::vector<std::pair<double, double>> generate_random_convex_polygon(unsigned i
 	std::vector<double> y_vec;
 	y_vec.reserve(n);
 
-	double lastTop = min_x, lastBot = min_x;
+	double last_top = min_x, lastBot = min_x;
 
 	for (int i = 1; i < n - 1; i++) {
 		double x = x_pool[i];
 
 		if (uniform_bool_distribution(mt)) {
-			x_vec.push_back(x - lastTop);
-			lastTop = x;
+			x_vec.push_back(x - last_top);
+			last_top = x;
 		} else {
 			x_vec.push_back(lastBot - x);
 			lastBot = x;
 		}
 	}
 
-	x_vec.push_back(max_x - lastTop);
+	x_vec.push_back(max_x - last_top);
 	x_vec.push_back(lastBot - max_x);
 
-	double lastLeft = min_y, lastRight = min_y;
+	double last_left = min_y, lastRight = min_y;
 
 	for (int i = 1; i < n - 1; i++) {
 		double y = y_pool[i];
 
 		if (uniform_bool_distribution(mt)) {
-			y_vec.push_back(y - lastLeft);
-			lastLeft = y;
+			y_vec.push_back(y - last_left);
+			last_left = y;
 		} else {
 			y_vec.push_back(lastRight - y);
 			lastRight = y;
 		}
 	}
 
-	y_vec.push_back(max_y - lastLeft);
+	y_vec.push_back(max_y - last_left);
 	y_vec.push_back(lastRight - max_y);
 
 	std::shuffle(y_vec.begin(), y_vec.end(), mt);
@@ -98,6 +100,30 @@ std::vector<std::pair<double, double>> generate_random_convex_polygon(unsigned i
 		points[i].first += x_shift;
 		points[i].second += y_shift;
 	}
+
+	return points;
+}
+
+std::vector<std::pair<double, double>> generate_random_polygon(unsigned int n) {
+	thread_local static std::random_device rd;
+	thread_local static std::mt19937 mt{rd()};
+	thread_local static std::uniform_real_distribution<double> uniform_real_distribution;
+
+	std::vector<std::pair<double, double>> points(n);
+
+	double sum_x = 0.0;
+	double sum_y = 0.0;
+
+	for (int i = 0; i < n; ++i) {
+		sum_x += points[i].first = uniform_real_distribution(mt);
+		sum_y += points[i].second = uniform_real_distribution(mt);
+	}
+
+	double mean_x = sum_x / n;
+	double mean_y = sum_y / n;
+
+	std::sort(points.begin(), points.end(),
+	    [mean_x, mean_y](std::pair<double, double> const lhs, std::pair<double, double> const rhs) { return std::atan2(lhs.second - mean_y, lhs.first - mean_x) < std::atan2(rhs.second - mean_y, rhs.first - mean_x); });
 
 	return points;
 }
