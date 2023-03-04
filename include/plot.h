@@ -79,10 +79,55 @@ std::vector<sf::ConvexShape> plot(std::vector<std::vector<std::array<std::pair<d
 	return shapes;
 }
 
-void display(std::vector<sf::ConvexShape> const& shapes) {
+std::vector<sf::VertexArray> plot(std::vector<std::array<std::pair<double, double>, 2>> const& lines) {
+	std::vector<sf::VertexArray> shapes(lines.size(), sf::VertexArray(sf::LineStrip, 2));
+
+	for (unsigned int i = 0; i < lines.size(); ++i) {
+		shapes[i][0].position.x = lines[i][0].first;
+		shapes[i][0].position.y = lines[i][0].second;
+
+		shapes[i][1].position.x = lines[i][1].first;
+		shapes[i][1].position.y = lines[i][1].second;
+
+		switch (i % 7) {
+			case 0:
+				shapes[i][0].color = sf::Color::Blue;
+				shapes[i][1].color = sf::Color::Blue;
+				break;
+			case 1:
+				shapes[i][0].color = sf::Color::Red;
+				shapes[i][1].color = sf::Color::Red;
+				break;
+			case 2:
+				shapes[i][0].color = sf::Color::Green;
+				shapes[i][1].color = sf::Color::Green;
+				break;
+			case 3:
+				shapes[i][0].color = sf::Color::Yellow;
+				shapes[i][1].color = sf::Color::Yellow;
+				break;
+			case 4:
+				shapes[i][0].color = sf::Color::Magenta;
+				shapes[i][1].color = sf::Color::Magenta;
+				break;
+			case 5:
+				shapes[i][0].color = sf::Color::Cyan;
+				shapes[i][1].color = sf::Color::Cyan;
+				break;
+			case 6:
+				shapes[i][0].color = sf::Color::Black;
+				shapes[i][1].color = sf::Color::Black;
+				break;
+		}
+	}
+
+	return shapes;
+}
+
+void display(std::vector<sf::ConvexShape> const& shapes, std::vector<sf::VertexArray> const& lines = {}) {
 	sf::RenderWindow window(sf::VideoMode(1200, 780), "Hello From SFML");
 
-	sf::View view({0.5, 0.5}, {1.5, 1.5});
+	sf::View view({0.5, 0.5}, {3.5, -3.5});
 
 	window.setView(view);
 
@@ -97,6 +142,10 @@ void display(std::vector<sf::ConvexShape> const& shapes) {
 
 		for (auto const& shape : shapes) {
 			window.draw(shape);
+		}
+
+		for (auto const& line : lines) {
+			window.draw(line);
 		}
 
 		window.display();

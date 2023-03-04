@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "../include/earcut.h"
+#include "../include/gjk.h"
+#include "../include/sat.h"
 
 std::vector<std::array<std::pair<double, double>, 3>> generate_triangles(std::vector<std::pair<double, double>> const &polygon) {
 	std::vector<std::array<std::pair<double, double>, 3>> res;
@@ -20,9 +22,9 @@ std::vector<std::array<std::pair<double, double>, 3>> generate_triangles(std::ve
 }
 
 bool check_collision_sat_concave(std::vector<std::array<std::pair<double, double>, 3>> const &triangles1, std::vector<std::array<std::pair<double, double>, 3>> const &triangles2) {
-	for (auto const &k : triangles1) {
-		for (auto const &l : triangles2) {
-			if (sat(k, l)) return true;
+	for (unsigned int k = 0; k < triangles1.size(); ++k) {
+		for (unsigned int l = 0; l < triangles2.size(); ++l) {
+			if (sat_faster((std::pair<double, double> const *)triangles1[k].data(), triangles1[k].size(), (std::pair<double, double> const *)triangles2[l].data(), triangles2[l].size())) return true;
 		}
 	}
 

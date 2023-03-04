@@ -2,6 +2,15 @@
 
 #include <random>
 #include <vector>
+#include <array>
+
+std::array<std::pair<double, double>, 2> generate_random_line() {
+	thread_local static std::random_device rd;
+	thread_local static std::mt19937 mt{rd()};
+	thread_local static std::uniform_real_distribution<double> uniform_real_distribution;
+
+	return {std::make_pair(uniform_real_distribution(mt), uniform_real_distribution(mt)), std::make_pair(uniform_real_distribution(mt), uniform_real_distribution(mt))};
+}
 
 std::vector<std::pair<double, double>> generate_random_convex_polygon(unsigned int n) {
 	thread_local static std::random_device rd;

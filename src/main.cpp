@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 
-#include "../include/earcut.h"
 #include "../include/generate.h"
 #include "../include/gjk.h"
 #include "../include/plot.h"
@@ -11,6 +10,7 @@
 
 int main() {
 	std::vector<std::vector<std::pair<double, double>>> vertices = {generate_random_convex_polygon(5), generate_random_convex_polygon(5)};
+	std::vector<std::array<std::pair<double, double>, 2>> lines = {generate_random_line()};
 
 	for (unsigned int i = 0; i < vertices.size(); ++i) {
 		for (unsigned int j = i + 1; j < vertices.size(); ++j) {
@@ -24,7 +24,13 @@ int main() {
 		}
 	}
 
-	display(plot(vertices));
+	for (unsigned int i = 0; i < vertices.size(); ++i) {
+		for (unsigned int j = 0; j < lines.size(); ++j) {
+			std::cout << "SAT_LINE: The polygon an line intersect " << std::boolalpha << sat_faster(vertices[i].data(), vertices[i].size(), lines[j].data(), lines[j].size()) << std::endl;
+		}
+	}
+
+	display(plot(vertices), plot(lines));
 
 	std::vector<std::vector<std::pair<double, double>>> vertices_concave = {generate_random_polygon(5), generate_random_polygon(5)};
 	std::vector<std::vector<std::array<std::pair<double, double>, 3>>> vertices_convex(vertices_concave.size());
