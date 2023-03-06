@@ -1,18 +1,20 @@
 #pragma once
 
+#include <array>
 #include <random>
 #include <vector>
-#include <array>
 
-std::array<std::pair<double, double>, 2> generate_random_line() {
+#include "../include/gjk.h"
+
+std::array<vec2, 2> generate_random_line() {
 	thread_local static std::random_device rd;
 	thread_local static std::mt19937 mt{rd()};
 	thread_local static std::uniform_real_distribution<double> uniform_real_distribution;
 
-	return {std::make_pair(uniform_real_distribution(mt), uniform_real_distribution(mt)), std::make_pair(uniform_real_distribution(mt), uniform_real_distribution(mt))};
+	return {vec2{uniform_real_distribution(mt), uniform_real_distribution(mt)}, vec2{uniform_real_distribution(mt), uniform_real_distribution(mt)}};
 }
 
-std::vector<std::pair<double, double>> generate_random_convex_polygon(unsigned int n) {
+std::vector<vec2> generate_random_convex_polygon(unsigned int n) {
 	thread_local static std::random_device rd;
 	thread_local static std::mt19937 mt{rd()};
 	thread_local static std::uniform_int_distribution<> uniform_bool_distribution(0, 1);
@@ -77,26 +79,26 @@ std::vector<std::pair<double, double>> generate_random_convex_polygon(unsigned i
 
 	std::shuffle(y_vec.begin(), y_vec.end(), mt);
 
-	std::vector<std::pair<double, double>> vec;
+	std::vector<vec2> vec;
 	vec.reserve(n);
 
 	for (int i = 0; i < n; i++) {
-		vec.emplace_back(x_vec[i], y_vec[i]);
+		vec.push_back(vec2{x_vec[i], y_vec[i]});
 	}
 
-	std::sort(vec.begin(), vec.end(), [](std::pair<double, double> const lhs, std::pair<double, double> const rhs) { return std::atan2(lhs.second, lhs.first) < std::atan2(rhs.second, rhs.first); });
+	std::sort(vec.begin(), vec.end(), [](vec2 const lhs, vec2 const rhs) { return std::atan2(lhs.y, lhs.x) < std::atan2(rhs.y, rhs.x); });
 
 	double x = 0, y = 0;
 	double min_polygon_x = 0;
 	double min_polygon_y = 0;
-	std::vector<std::pair<double, double>> points;
+	std::vector<vec2> points;
 	points.reserve(n);
 
 	for (int i = 0; i < n; i++) {
-		points.emplace_back(x, y);
+		points.push_back(vec2{x, y});
 
-		x += vec[i].first;
-		y += vec[i].second;
+		x += vec[i].x;
+		y += vec[i].y;
 
 		min_polygon_x = std::min(min_polygon_x, x);
 		min_polygon_y = std::min(min_polygon_y, y);
@@ -106,33 +108,32 @@ std::vector<std::pair<double, double>> generate_random_convex_polygon(unsigned i
 	double y_shift = min_y - min_polygon_y;
 
 	for (int i = 0; i < n; i++) {
-		points[i].first += x_shift;
-		points[i].second += y_shift;
+		points[i].x += x_shift;
+		points[i].y += y_shift;
 	}
 
 	return points;
 }
 
-std::vector<std::pair<double, double>> generate_random_polygon(unsigned int n) {
+std::vector<vec2> generate_random_polygon(unsigned int n) {
 	thread_local static std::random_device rd;
 	thread_local static std::mt19937 mt{rd()};
 	thread_local static std::uniform_real_distribution<double> uniform_real_distribution;
 
-	std::vector<std::pair<double, double>> points(n);
+	std::vector<vec2> points(n);
 
 	double sum_x = 0.0;
 	double sum_y = 0.0;
 
 	for (int i = 0; i < n; ++i) {
-		sum_x += points[i].first = uniform_real_distribution(mt);
-		sum_y += points[i].second = uniform_real_distribution(mt);
+		sum_x += points[i].x = uniform_real_distribution(mt);
+		sum_y += points[i].y = uniform_real_distribution(mt);
 	}
 
 	double mean_x = sum_x / n;
 	double mean_y = sum_y / n;
 
-	std::sort(points.begin(), points.end(),
-	    [mean_x, mean_y](std::pair<double, double> const lhs, std::pair<double, double> const rhs) { return std::atan2(lhs.second - mean_y, lhs.first - mean_x) < std::atan2(rhs.second - mean_y, rhs.first - mean_x); });
+	std::sort(points.begin(), points.end(), [mean_x, mean_y](vec2 const lhs, vec2 const rhs) { return std::atan2(lhs.y - mean_y, lhs.x - mean_x) < std::atan2(rhs.y - mean_y, rhs.x - mean_x); });
 
 	return points;
 }

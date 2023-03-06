@@ -3,13 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-std::vector<sf::ConvexShape> plot(std::vector<std::vector<std::pair<double, double>>> const& vertices) {
+std::vector<sf::ConvexShape> plot(std::vector<std::vector<vec2>> const& vertices) {
 	std::vector<sf::ConvexShape> shapes(vertices.size());
 
 	for (unsigned int i = 0; i < vertices.size(); ++i) {
 		shapes[i].setPointCount(vertices[i].size());
 		for (unsigned int j = 0; j < vertices[i].size(); ++j) {
-			shapes[i].setPoint(j, {static_cast<float>(vertices[i][j].first), static_cast<float>(vertices[i][j].second)});
+			shapes[i].setPoint(j, {static_cast<float>(vertices[i][j].x), static_cast<float>(vertices[i][j].y)});
 		}
 
 		switch (i % 7) {
@@ -40,14 +40,14 @@ std::vector<sf::ConvexShape> plot(std::vector<std::vector<std::pair<double, doub
 	return shapes;
 }
 
-std::vector<sf::ConvexShape> plot(std::vector<std::vector<std::array<std::pair<double, double>, 3>>> const& triangles) {
+std::vector<sf::ConvexShape> plot(std::vector<std::vector<std::array<vec2, 3>>> const& triangles) {
 	std::vector<sf::ConvexShape> shapes(triangles.size() * 3);
 
 	for (unsigned int i = 0, idx = 0; i < triangles.size(); ++i) {
 		for (unsigned int j = 0; j < triangles[i].size(); ++j, ++idx) {
 			shapes[idx].setPointCount(3);
 			for (unsigned int k = 0; k < 3; ++k) {
-				shapes[idx].setPoint(k, {static_cast<float>(triangles[i][j][k].first), static_cast<float>(triangles[i][j][k].second)});
+				shapes[idx].setPoint(k, {static_cast<float>(triangles[i][j][k].x), static_cast<float>(triangles[i][j][k].y)});
 			}
 
 			switch (idx % 7) {
@@ -79,15 +79,15 @@ std::vector<sf::ConvexShape> plot(std::vector<std::vector<std::array<std::pair<d
 	return shapes;
 }
 
-std::vector<sf::VertexArray> plot(std::vector<std::array<std::pair<double, double>, 2>> const& lines) {
+std::vector<sf::VertexArray> plot(std::vector<std::array<vec2, 2>> const& lines) {
 	std::vector<sf::VertexArray> shapes(lines.size(), sf::VertexArray(sf::LineStrip, 2));
 
 	for (unsigned int i = 0; i < lines.size(); ++i) {
-		shapes[i][0].position.x = lines[i][0].first;
-		shapes[i][0].position.y = lines[i][0].second;
+		shapes[i][0].position.x = lines[i][0].x;
+		shapes[i][0].position.y = lines[i][0].y;
 
-		shapes[i][1].position.x = lines[i][1].first;
-		shapes[i][1].position.y = lines[i][1].second;
+		shapes[i][1].position.x = lines[i][1].x;
+		shapes[i][1].position.y = lines[i][1].y;
 
 		switch (i % 7) {
 			case 0:

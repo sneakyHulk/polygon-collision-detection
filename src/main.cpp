@@ -9,18 +9,18 @@
 #include "../include/utils.h"
 
 int main() {
-	std::vector<std::vector<std::pair<double, double>>> vertices = {generate_random_convex_polygon(5), generate_random_convex_polygon(5)};
-	std::vector<std::array<std::pair<double, double>, 2>> lines = {generate_random_line()};
+	std::vector<std::vector<vec2>> vertices = {generate_random_convex_polygon(5), generate_random_convex_polygon(5)};
+	std::vector<std::array<vec2, 2>> lines = {generate_random_line()};
 
 	for (unsigned int i = 0; i < vertices.size(); ++i) {
 		for (unsigned int j = i + 1; j < vertices.size(); ++j) {
-			std::cout << "SAT: The polygons intersect " << std::boolalpha << sat(vertices[i], vertices[j]) << std::endl;
+			std::cout << "SAT: The polygons intersect " << std::boolalpha << sat_faster(vertices[i].data(), vertices[i].size(), vertices[j].data(), vertices[j].size()) << std::endl;
 		}
 	}
 
 	for (unsigned int i = 0; i < vertices.size(); ++i) {
 		for (unsigned int j = i + 1; j < vertices.size(); ++j) {
-			std::cout << "GJK: The polygons intersect " << std::boolalpha << gjk((const vec2 *)vertices[i].data(), vertices[i].size(), (const vec2 *)vertices[j].data(), vertices[j].size()) << std::endl;
+			std::cout << "GJK: The polygons intersect " << std::boolalpha << gjk(vertices[i].data(), vertices[i].size(), vertices[j].data(), vertices[j].size()) << std::endl;
 		}
 	}
 
@@ -32,8 +32,8 @@ int main() {
 
 	display(plot(vertices), plot(lines));
 
-	std::vector<std::vector<std::pair<double, double>>> vertices_concave = {generate_random_polygon(5), generate_random_polygon(5)};
-	std::vector<std::vector<std::array<std::pair<double, double>, 3>>> vertices_convex(vertices_concave.size());
+	std::vector<std::vector<vec2>> vertices_concave = {generate_random_polygon(5), generate_random_polygon(5)};
+	std::vector<std::vector<std::array<vec2, 3>>> vertices_convex(vertices_concave.size());
 
 	for (unsigned int i = 0; i < vertices_concave.size(); ++i) {
 		vertices_convex[i] = generate_triangles(vertices_concave[i]);

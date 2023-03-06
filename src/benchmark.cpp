@@ -8,8 +8,8 @@
 #include "../include/sat.h"
 #include "../include/utils.h"
 
-std::vector<std::vector<std::pair<double, double>>> vertices = {generate_random_convex_polygon(3), generate_random_convex_polygon(4), generate_random_convex_polygon(5), generate_random_convex_polygon(6)};
-std::vector<std::vector<std::pair<double, double>>> vertices_concave = {generate_random_polygon(3), generate_random_polygon(4), generate_random_polygon(5), generate_random_polygon(6)};
+std::vector<std::vector<vec2>> vertices = {generate_random_convex_polygon(3), generate_random_convex_polygon(4), generate_random_convex_polygon(5), generate_random_convex_polygon(6)};
+std::vector<std::vector<vec2>> vertices_concave = {generate_random_polygon(3), generate_random_polygon(4), generate_random_polygon(5), generate_random_polygon(6)};
 std::vector<double> test = {-1.5, 0.0, -1.0, -1.0, 0.0, 1.0, 0.4, 0.5, 0.5, 0.6, 0.9, 2.0};
 
 static void SAT(benchmark::State& state) {
@@ -47,7 +47,7 @@ BENCHMARK(GJK);
 
 static void SAT_CONCAVE(benchmark::State& state) {
 	for (auto _ : state) {
-		std::vector<std::vector<std::array<std::pair<double, double>, 3>>> vertices_convex(vertices_concave.size());
+		std::vector<std::vector<std::array<vec2, 3>>> vertices_convex(vertices_concave.size());
 
 		for (unsigned int i = 0; i < vertices_concave.size(); ++i) {
 			vertices_convex[i] = generate_triangles(vertices_concave[i]);
@@ -64,7 +64,7 @@ BENCHMARK(SAT_CONCAVE);
 
 static void GJK_CONCAVE(benchmark::State& state) {
 	for (auto _ : state) {
-		std::vector<std::vector<std::array<std::pair<double, double>, 3>>> vertices_convex(vertices_concave.size());
+		std::vector<std::vector<std::array<vec2, 3>>> vertices_convex(vertices_concave.size());
 
 		for (unsigned int i = 0; i < vertices_concave.size(); ++i) {
 			vertices_convex[i] = generate_triangles(vertices_concave[i]);
