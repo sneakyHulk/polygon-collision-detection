@@ -9,6 +9,14 @@
 #include "../include/utils.h"
 
 int main() {
+	std::vector<double> test1 = {3.6359316617978648, 1.6616158809531851, 3.6568293348335579, 1.7797822351395325, 3.8931620432062521, 1.7379868890681467, 3.9721199128689642, 1.7176679522209553, 3.9484756819793754, 1.6000203838413249,
+	    3.7131805452201148, 1.6473088456205025, 3.6359316617978648, 1.6616158809531851};
+
+	std::vector<double> test2 = {1.9649999955009012, 2.9199999977504505, 2.0849999955009011, 2.9200000022495489, 2.0850000044990984, 2.6800000022495492, 1.9650000044990987, 2.6799999977504507, 1.9649999955009012, 2.9199999977504505};
+
+	std::cout << std::boolalpha << sat_faster(reinterpret_cast<const vec2* const>(test1.data()), test1.size() / 2, reinterpret_cast<const vec2* const>(test2.data()), test2.size() / 2) << std::endl;
+	display(plot(reinterpret_cast<const vec2* const>(test1.data()), test1.size() / 2, reinterpret_cast<const vec2* const>(test2.data()), test2.size() / 2));
+
 	std::vector<std::vector<vec2>> vertices = {generate_random_convex_polygon(5), generate_random_convex_polygon(5)};
 	std::vector<std::array<vec2, 2>> lines = {generate_random_line()};
 

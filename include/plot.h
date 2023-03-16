@@ -3,6 +3,25 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+std::vector<sf::ConvexShape> plot(vec2 const* const poly1, unsigned int const count1, vec2 const* const poly2, unsigned int const count2) {
+	std::vector<sf::ConvexShape> shapes(2);
+	shapes[0].setPointCount(count1);
+	shapes[1].setPointCount(count2);
+
+	for (unsigned int j = 0; j < count1; ++j) {
+		shapes[0].setPoint(j, {static_cast<float>(poly1[j].x), static_cast<float>(poly1[j].y)});
+	}
+
+	for (unsigned int j = 0; j < count2; ++j) {
+		shapes[1].setPoint(j, {static_cast<float>(poly2[j].x), static_cast<float>(poly2[j].y)});
+	}
+
+	shapes[0].setFillColor(sf::Color::Blue);
+	shapes[1].setFillColor(sf::Color::Red);
+
+	return shapes;
+}
+
 std::vector<sf::ConvexShape> plot(std::vector<std::vector<vec2>> const& vertices) {
 	std::vector<sf::ConvexShape> shapes(vertices.size());
 
